@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Locale;
+//swagger url- http://localhost:8085/swagger-ui/index.html
 
 @RestController
 @RequestMapping("/booking")
