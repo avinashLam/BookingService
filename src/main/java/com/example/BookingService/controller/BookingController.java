@@ -1,6 +1,9 @@
 package com.example.BookingService.controller;
 
+import com.example.BookingService.config.AddressClient;
+import com.example.BookingService.entity.Address;
 import com.example.BookingService.entity.Booking;
+import com.example.BookingService.entity.BookingAddressDTO;
 import com.example.BookingService.service.BookingService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -9,8 +12,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 //swagger url- http://localhost:8085/swagger-ui/index.html
 
@@ -19,6 +25,8 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 public class BookingController {
     private final BookingService bookingService;
+    @Autowired
+    AddressClient addressClient;
     private final Logger logger= LoggerFactory.getLogger(BookingController.class);
 
     public BookingController(BookingService bookingService) {
@@ -39,11 +47,34 @@ public class BookingController {
             content = @Content
     )
     })
-    public ResponseEntity<Booking> newBooking(@RequestBody Booking booking){
-        Booking booking1=bookingService.saveBooking(booking);
-        logger.info("Posting data");
-        return  ResponseEntity.status(200).body(booking1);
+
+    public ResponseEntity<BookingAddressDTO> newBooking(@RequestBody BookingAddressDTO bookingAddressDTO) {
+        BookingAddressDTO bookingAddressDTO1 = new BookingAddressDTO();
+
+        // Save booking
+        Booking booking = bookingService.saveBooking(bookingAddressDTO.getBooking());
+        bookingAddressDTO1.setBooking(booking);
+
+        // Save addresses and get updated list with addressId
+        if (booking != null) {
+            List<Address> savedAddresses = addressClient.saveAddress(
+                    bookingAddressDTO.getAddressList(),
+                    booking.getBookingId()
+            );
+            bookingAddressDTO1.setAddressList(savedAddresses); // ✅ Use the updated list
+        }
+
+        return ResponseEntity.ok(bookingAddressDTO1); // ✅ Return updated DTO
     }
+
+
+
+
+    //    public ResponseEntity<Booking> newBooking(@RequestBody Booking booking){
+//        Booking booking1=bookingService.saveBooking(booking);
+//        logger.info("Posting data");
+//        return  ResponseEntity.status(200).body(booking1);
+//    }
     @DeleteMapping("/{id}")
     @Operation(summary="Delete By Id")
     @ApiResponses(value = {

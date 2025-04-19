@@ -1,20 +1,22 @@
 package com.example.BookingService.service;
 
-import com.example.BookingService.controller.BookingController;
 import com.example.BookingService.entity.Booking;
 import com.example.BookingService.exception.CustomIdNotFound;
 import com.example.BookingService.repository.BookingRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.Optional;
 
 @Service
 public class BookingService {
-
+    @Autowired
+     RestTemplate restTemplate;
     private final BookingRepository bookingRepository;
 
 
-    public BookingService(BookingRepository bookingRepository) {
+    public BookingService( BookingRepository bookingRepository) {
         this.bookingRepository = bookingRepository;
     }
 
@@ -36,7 +38,6 @@ public class BookingService {
             Booking booking1 = new Booking();
             booking1.setBookingId(booking2.getBookingId());
             booking1.setName(booking2.getName());
-            booking1.setName(booking2.getAddress());
             booking1.setPrice(booking2.getPrice());
             booking1.setDate(booking2.getDate());
 
@@ -48,7 +49,6 @@ public class BookingService {
         Booking booking2=bookingRepository.findById(id).orElse(null);
         booking2.setBookingId(id);
         booking2.setName(booking.getName());
-        booking2.setAddress(booking.getAddress());
         booking2.setPrice(booking.getPrice());
         booking2.setDate(booking.getDate());
 

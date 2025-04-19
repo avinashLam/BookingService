@@ -20,8 +20,7 @@ public class Booking {
     @NonNull
 
     private double price;
-    @NonNull
-    private String address;
+
     @NonNull
 @JsonFormat(pattern = "dd-MM-yyyy")
     private Date date;
@@ -50,13 +49,7 @@ public class Booking {
         this.price = price;
     }
 
-    public String getAddress() {
-        return address;
-    }
 
-    public void setAddress(String address) {
-        this.address = address;
-    }
 
     public Date getDate() {
         return date;
